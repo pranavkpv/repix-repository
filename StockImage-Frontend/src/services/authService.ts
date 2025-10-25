@@ -5,7 +5,6 @@ class AuthService {
     async userRegister(data: TRegisterFormInput): Promise<number> {
         try {
             const res = await axiosInstance.post('/register', data);
-            console.log("Usesr registerd ::", res);
             return res.status;
         } catch (err) {
             console.log('Error is ', err);

@@ -18,7 +18,7 @@ export const BackAuthProtected: React.FC<ProtectedRouteProps> = ({ children }) =
   const accessToken = localStorage.getItem('accessToken');
 
   if (accessToken) {
-    return <Navigate to="/profile" />; 
+    return <Navigate to="/user/profile" />; 
   }
   return <>{children}</>;
 };

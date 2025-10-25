@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Pencil, Trash2, User, Mail, Phone, LogOut, Camera, Save, Image as ImageIcon, KeyRound } from "lucide-react";
+import { Pencil, Trash2, User, Mail, Phone, LogOut, Camera, Save, Image as ImageIcon, KeyRound, AlertTriangle } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { type TResetPassword, type TResponseType, type TUserData } from "../../types/auth.types";
 import { type TImage } from "../../types/image.types";
@@ -17,12 +17,14 @@ import { useNavigate } from "react-router-dom";
 import ResetPassword from "../Auth/ResetPassword";
 import { AuthContext } from "../../Contexxt/authContext";
 
+
 export default function ProfilePage() {
   const [uploaded, setUploaded] = useState<TImage[]>([]);
   const baseUrl = `${import.meta.env.VITE_APP_BASE_URL}/uploads/`;
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [isChange, setOrderChange] = useState<boolean>(false);
   const [isResetPassword, setResetPassword] = useState<boolean>(false);
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState<boolean>(false);
   const [showed, setShowed] = useState(false);
   const context = useContext(AuthContext);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -45,6 +47,7 @@ export default function ProfilePage() {
   const location = useLocation();
   const userData = location.state;
 
+
   useEffect(() => {
     setUser(userData);
     const fetchData = async () => {
@@ -59,12 +62,14 @@ export default function ProfilePage() {
     fetchData();
   }, [userData, refreshKey]);
 
+
   const handleUploadComplete = (shouldRefresh: boolean) => {
     setShowed(shouldRefresh);
     if (shouldRefresh) {
       setRefreshKey((prev) => prev + 1);
     }
   };
+
 
   const handleEdit = (image: TImage) => {
     Swal.fire({
@@ -82,6 +87,7 @@ export default function ProfilePage() {
       }
     });
   };
+
 
   const handleDelete = async (imageId: string) => {
     try {
@@ -109,6 +115,7 @@ export default function ProfilePage() {
     }
   };
 
+
   const handleImageSave = async (file: File, value: string) => {
     setModalOpen(false);
     const formData = new FormData();
@@ -120,6 +127,7 @@ export default function ProfilePage() {
     );
   };
 
+
   const moveImage = (from: number, to: number) => {
     const updated = [...uploaded];
     const [moved] = updated.splice(from, 1);
@@ -127,6 +135,7 @@ export default function ProfilePage() {
     setOrderChange(true);
     setUploaded(updated);
   };
+
 
   const handelChange = async () => {
     const updated = uploaded.map((image, index) => ({ ...image, order: index + 1 }));
@@ -138,7 +147,13 @@ export default function ProfilePage() {
     }
   };
 
-  const handleLogout = async () => {
+
+  const handleLogoutClick = () => {
+    setLogoutModalOpen(true);
+  };
+
+
+  const handleLogoutConfirm = async () => {
     const res: TResponseType = await authService.userLogout();
     if (res.success) {
       localStorage.removeItem("accessToken");
@@ -146,11 +161,14 @@ export default function ProfilePage() {
       toast.success(res.message);
       navigate("/");
     }
+    setLogoutModalOpen(false);
   };
+
 
   const handleResetPassword = () => {
     setResetPassword(true);
   };
+
 
   const handleReset = async (data: TResetPassword) => {
     console.log(data);
@@ -159,6 +177,7 @@ export default function ProfilePage() {
     if (res.success) toast.success(res.message);
     else toast.error(res.message);
   };
+
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -173,13 +192,14 @@ export default function ProfilePage() {
             </h1>
           </div>
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
             <LogOut size={18} />
             Logout
           </button>
         </nav>
+
 
         {/* Profile Section */}
         <div className="max-w-5xl mx-auto mt-10 px-4">
@@ -192,6 +212,7 @@ export default function ProfilePage() {
                 <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-500 border-4 border-white rounded-full"></div>
               </div>
 
+
               {/* User Info */}
               <div className="flex-1 text-center sm:text-left">
                 <h2 className="text-3xl font-bold text-gray-800 mb-1">{user.name}</h2>
@@ -200,6 +221,7 @@ export default function ProfilePage() {
                   Member since 2025
                 </p>
               </div>
+
 
               {/* Reset Password Button */}
               <button
@@ -210,6 +232,7 @@ export default function ProfilePage() {
                 Reset Password
               </button>
             </div>
+
 
             {/* Contact Info */}
             <div className="grid sm:grid-cols-2 gap-6 mt-6">
@@ -223,6 +246,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+
               <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border border-purple-100">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
                   <Phone size={20} className="text-white" />
@@ -235,6 +259,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+
 
         {/* Gallery Section */}
         <div className="max-w-7xl mx-auto mt-10 px-4 pb-10">
@@ -250,10 +275,12 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+
               {/* Upload Component */}
               <div className="mb-8">
                 <ImageUpload userId={user.id} update={handleUploadComplete} />
               </div>
+
 
               {/* Images Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -265,6 +292,7 @@ export default function ProfilePage() {
                       moveImage={moveImage}
                       baseUrl={`${baseUrl}${image.image}`}
                     />
+
 
                     {/* Action Buttons */}
                     <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
@@ -287,6 +315,7 @@ export default function ProfilePage() {
                 ))}
               </div>
 
+
               {/* Save Order Button */}
               {isChange && (
                 <div className="flex justify-center mt-8">
@@ -307,6 +336,7 @@ export default function ProfilePage() {
           )}
         </div>
 
+
         {/* Modals */}
         {isModalOpen && (
           <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
@@ -318,9 +348,51 @@ export default function ProfilePage() {
           </Modal>
         )}
 
+
         {isResetPassword && (
           <Modal isOpen={isResetPassword} onClose={() => setResetPassword(false)}>
             <ResetPassword userId={userData.id} onReset={handleReset} />
+          </Modal>
+        )}
+
+
+        {/* Logout Confirmation Modal */}
+        {isLogoutModalOpen && (
+          <Modal isOpen={isLogoutModalOpen} onClose={() => setLogoutModalOpen(false)}>
+            <div className="p-6 max-w-md">
+              <div className="flex flex-col items-center text-center">
+                {/* Warning Icon */}
+                <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center mb-4">
+                  <AlertTriangle size={32} className="text-red-600" />
+                </div>
+
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                  Confirm Logout
+                </h2>
+
+                {/* Description */}
+                <p className="text-gray-600 mb-6">
+                  Are you sure you want to logout? You will need to login again to access your account.
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 w-full">
+                  <button
+                    onClick={() => setLogoutModalOpen(false)}
+                    className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleLogoutConfirm}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
           </Modal>
         )}
       </div>

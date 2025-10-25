@@ -31,15 +31,10 @@ const Register: React.FC = () => {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen overflow-hidden py-12">
-      {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600 animate-gradient-xy"></div>
-
-      {/* Decorative circles */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
       <div className="absolute top-40 right-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
       <div className="absolute -bottom-20 left-40 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-
-      {/* Header */}
       <header className="w-full px-6 py-4 flex justify-between items-center bg-white/90 backdrop-blur-lg shadow-lg fixed top-0 z-20 border-b border-purple-100">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -100,7 +95,7 @@ const Register: React.FC = () => {
             <ReusableInput
               label="Phone Number"
               type="tel"
-              placeholder="+1 (555) 000-0000"
+              placeholder="0000000000"
               icon={<Phone className="w-5 h-5 text-gray-400" />}
               register={register('phone', {
                 required: 'Phone number is required',
