@@ -25,7 +25,6 @@ export default function ProfilePage() {
   const [isChange, setOrderChange] = useState<boolean>(false);
   const [isResetPassword, setResetPassword] = useState<boolean>(false);
   const [isLogoutModalOpen, setLogoutModalOpen] = useState<boolean>(false);
-  const [showed, setShowed] = useState(false);
   const context = useContext(AuthContext);
   const [refreshKey, setRefreshKey] = useState(0);
   const [editImage, setEditImage] = useState<{
@@ -53,18 +52,12 @@ export default function ProfilePage() {
     const fetchData = async () => {
       const uploadedImages = await ImageService.fetchImages(userData.id);
       setUploaded(uploadedImages);
-      if (uploadedImages.length === 0) {
-        setShowed(true);
-      } else {
-        setShowed(false);
-      }
     };
     fetchData();
   }, [userData, refreshKey]);
 
 
   const handleUploadComplete = (shouldRefresh: boolean) => {
-    setShowed(shouldRefresh);
     if (shouldRefresh) {
       setRefreshKey((prev) => prev + 1);
     }
